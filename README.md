@@ -35,22 +35,14 @@ address from hosting (below).
 
 ## Hosting and installing (GitHub Pages)
 
-Every push to the `main` branch builds the game and publishes it with
-`.github/workflows/deploy.yml`. The site address will be
-`https://<your-github-name>.github.io/<repo-name>/`.
+The game lives at **https://danielrnavarro831.github.io/ewe-and-me/**.
 
-**One-time setup:**
+The repo (https://github.com/DanielRNavarro831/ewe-and-me) is public because GitHub's free plan
+only hosts Pages sites from public repos. Pages is already set to deploy from GitHub Actions.
 
-1. Create the GitHub repository and push: `gh repo create ewe-and-me --private --source . --push`
-   (a private repo is fine; the *site* is still reachable by anyone with the link).
-2. On GitHub, open the repo → **Settings → Pages** → under *Build and deployment*, set **Source** to
-   **GitHub Actions**.
-3. Open the **Actions** tab and wait for the green check (about a minute).
-
-> Private repositories need a paid GitHub plan for Pages. If yours is free, create the repo as
-> `--public` instead; nothing secret lives in the code.
-
-**After that, deploying is one command:** `git push`
+**Deploying is one command:** `git push`. Every push to `main` builds the game and publishes it
+with `.github/workflows/deploy.yml`; the **Actions** tab on GitHub shows a green check when it's
+live (about a minute).
 
 **Installing on the Pixel:** open the site address in Chrome → ⋮ menu → **Add to home screen** →
 **Install**. It then opens full-screen from the home screen and works offline. The game also offers
