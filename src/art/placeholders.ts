@@ -2,6 +2,7 @@ import type { PixelMap } from './grid';
 import { madhuFrames } from './characters';
 import { sheepFrames, catFrames } from './animals';
 import { grassTile, woodFloorTile, wallTile, dirtPathTile, fenceTile, windowSprite } from './tiles';
+import * as props from './props';
 import { iconRanch, iconWorkshop, iconDye, iconShop, iconStash, iconCollection, iconSettings } from './icons';
 
 /**
@@ -23,6 +24,20 @@ export function buildPlaceholders(): Record<string, PixelMap[]> {
     tile_wall_lavender: [wallTile('v', 'l')],
     tile_fence: [fenceTile()],
     prop_window: [windowSprite()],
+    prop_spinning_wheel: [props.spinningWheel()],
+    prop_hay_trough: [props.hayTrough()],
+    prop_skirting_table: [props.skirtingTable()],
+    prop_wash_tub: [props.washTub()],
+    prop_dye_stove: [props.dyeStove()],
+    prop_dye_shelf: [props.dyeShelf()],
+    prop_drying_rack: [props.dryingRack()],
+    prop_shop_shelf: [props.shopShelf()],
+    prop_counter: [props.counter()],
+    prop_knitting_table: [props.knittingTable()],
+    prop_cubby: [props.cubby()],
+    prop_picture_frame: [props.pictureFrame()],
+    prop_book_stand: [props.bookStand()],
+    prop_yarn_basket: [props.yarnBasket()],
     icon_ranch: [iconRanch()],
     icon_workshop: [iconWorkshop()],
     icon_dye: [iconDye()],

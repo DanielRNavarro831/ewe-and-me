@@ -19,6 +19,20 @@ export class BootScene extends Phaser.Scene {
     registerSprites(this);
     for (const a of SPRITES) {
       if (a.frames < 2) continue;
+      // Idle blinks: eyes open for a few seconds, then a quick ~0.12 s blink.
+      // (Frame duration is added on top of the 1/frameRate base time.)
+      if (a.key.startsWith('char_') && a.key.includes('_idle_') || /^cat_.*_idle$/.test(a.key)) {
+        this.anims.create({
+          key: a.key,
+          frames: [
+            { key: a.key, frame: 0, duration: 3800 },
+            { key: a.key, frame: 1, duration: 0 },
+          ],
+          frameRate: 8,
+          repeat: -1,
+        });
+        continue;
+      }
       const walk = a.key.includes('_walk_');
       this.anims.create({
         key: a.key,

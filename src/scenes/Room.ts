@@ -91,13 +91,23 @@ export abstract class RoomScene extends Phaser.Scene {
 
   /** Adds a window on the back wall whose panes follow the sky color. */
   protected addWindow(x: number): Phaser.GameObjects.Image {
-    const img = this.add.image(x, 6, 'prop_window').setOrigin(0.5, 0);
+    const img = this.add.image(x, 5, 'prop_window').setOrigin(0.5, 0);
     // tint the upper panes with the live sky color
     for (const px of [x - 10, x + 1]) {
       const sky = this.add.rectangle(px, 8, 9, 10, hex('b')).setOrigin(0).setDepth(img.depth + 0.5).setAlpha(0.6);
       this.skyRects.push(sky);
     }
     return img;
+  }
+
+  /** A prop standing on the floor, anchored at its feet and depth-sorted with Madhu. */
+  protected floorProp(x: number, y: number, key: string): Phaser.GameObjects.Image {
+    return this.place(this.add.image(x, y, key).setOrigin(0.5, 1));
+  }
+
+  /** A prop hung on the back wall, behind everything on the floor. */
+  protected wallProp(x: number, y: number, key: string): Phaser.GameObjects.Image {
+    return this.add.image(x, y, key).setOrigin(0).setDepth(1);
   }
 
   /** Places a sprite on the floor with depth sorted by its feet. */

@@ -48,18 +48,19 @@ export function fenceTile(): PixelMap {
   g.rect(0, 10, 16, 2, 'L').rect(0, 12, 16, 1, 'W');
   g.rect(2, 2, 3, 13, 'L').rect(4, 2, 1, 13, 'W');
   g.set(3, 2, 'w');
-  g.outline('D');
+  g.outline('o');
   return g.rows();
 }
 
 export function windowSprite(): PixelMap {
-  // 24x20 window; panes are transparent-ish sky that the scene tints by time of day.
-  const g = new Grid(24, 20);
-  g.rect(0, 0, 24, 20, 'W');
-  g.rect(2, 2, 9, 15, 'b').rect(13, 2, 9, 15, 'b');
-  g.rect(2, 12, 9, 5, 'H').rect(13, 12, 9, 5, 'H');
-  g.rect(3, 3, 2, 1, 'w').rect(14, 3, 2, 1, 'w');
-  g.rect(0, 17, 24, 3, 'L');
-  g.strokeRect(0, 0, 24, 20, 'D');
+  // 26x22 window with a dark outline; the scene tints the upper panes with the live sky.
+  const g = new Grid(26, 22);
+  g.rect(1, 1, 24, 20, 'W');
+  g.rect(3, 3, 9, 15, 'b').rect(14, 3, 9, 15, 'b');
+  g.rect(3, 13, 9, 5, 'H').rect(14, 13, 9, 5, 'H');
+  g.rect(4, 4, 2, 1, 'w').rect(15, 4, 2, 1, 'w');
+  g.rect(1, 18, 24, 3, 'L');
+  g.strokeRect(1, 1, 24, 20, 'D');
+  g.outline('o');
   return g.rows();
 }
