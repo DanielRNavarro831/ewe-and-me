@@ -26,7 +26,7 @@ You need [Node.js](https://nodejs.org) 20 or newer (already installed on this PC
 | Install packages (first time, or after pulling changes) | `npm install` |
 | Play on this computer while developing | `npm run dev`, then open http://localhost:5173 |
 | Check for errors and build the release | `npm run build` |
-| Regenerate the app icons | `npm run icons` |
+| Rebuild the home-screen icons from `art-source/app-logo.jpg` (needs Python with Pillow) | `npm run icons` |
 
 **Testing on the Pixel while developing:** with `npm run dev` running, the terminal prints a
 `Network:` address such as `http://192.168.1.20:5173`. Open that in Chrome on the Pixel (same
@@ -58,6 +58,14 @@ update, open **Settings → Backup → Export backup** and keep the code somewhe
 - **Settings → Backup** exports a copyable code or a downloadable file, and imports either one.
 - The save format is versioned. To change it: bump `SAVE_VERSION` in `src/systems/state.ts` and add
   a migration in `MIGRATIONS`, so older saves upgrade automatically.
+
+## App icon
+
+The home-screen icon comes from `art-source/app-logo.jpg`. To change it, replace that file
+with a new rounded-square badge on a plain light background and run `npm run icons`. That writes
+the normal icons (badge with transparent corners) and a "maskable" one (the artwork on its own
+background, shrunk so Android's circle mask never clips the text). An already-installed app may
+keep its old icon until it's removed and re-added to the home screen.
 
 ## Replacing art and sound
 

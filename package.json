@@ -9,7 +9,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
     "typecheck": "tsc --noEmit",
-    "icons": "node tools/make-icons.mjs"
+    "icons": "python tools/make-icons-from-logo.py",
+    "icons:placeholder": "node tools/make-icons.mjs"
   },
   "dependencies": {
     "@fontsource/pixelify-sans": "^5.3.0",
