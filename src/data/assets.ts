@@ -26,11 +26,14 @@ export interface AudioAsset {
   description: string;
 }
 
+/** Shared art style for characters: keep generated art matching the code-drawn sprites. */
+const CUTE = 'cute chibi proportions (head about half the body height), big sparkly eyes with a white highlight, small rosy blush on the cheeks';
 const MADHU =
-  'Madhu, an Indian woman with dark brown skin (#6B4226, shadow #4A2C17) and long black hair (#1A1414, highlight #3A2E2E) in a braid, ' +
-  'wearing a hand-knit mustard cardigan (#D9A43A) over a teal top (#2F8C8C), blue jeans and brown boots';
-const IROH = 'Iroh, a big round orange tabby cat (#E8892B, stripes #B85E1A, cream #F6D7A7) with amber eyes; the tip of his left ear is snipped';
-const MANGO = 'Mango, a small slim orange tabby cat (#E8892B, stripes #B85E1A) with a lighter cream muzzle and light-green eyes';
+  `Madhu, an Indian woman with dark brown skin (#6B4226, shadow #4A2C17) and long black hair (#1A1414, highlight #3A2E2E) ` +
+  `with a side-swept fringe and a braid over her shoulder, wearing a hand-knit mustard cardigan (#D9A43A) over a teal top (#2F8C8C), ` +
+  `blue jeans and brown boots; ${CUTE}`;
+const IROH = `Iroh, a big round orange tabby cat (#E8892B, stripes #B85E1A, cream #F6D7A7) with amber eyes; the tip of his left ear is snipped; ${CUTE}`;
+const MANGO = `Mango, a small slim orange tabby cat (#E8892B, stripes #B85E1A) with a lighter cream muzzle and light-green eyes; ${CUTE}`;
 const MERINO = 'a Merino sheep with a light face and very fine, dense white fleece (#FFF8EC, shade #E6DCCB)';
 
 const dirs = ['down', 'up', 'left', 'right'] as const;

@@ -1,92 +1,100 @@
 import { Grid, type PixelMap } from './grid';
 
 /**
- * Madhu, 16x24. Front, back and side views share leg rows (18-22),
- * which are swapped to make walk frames.
+ * Madhu, 16x24, in a cute chibi style: big head, big sparkly eyes, rosy cheeks.
+ * Each view is a 19-row top (head and body) plus 4 leg rows and a blank row.
+ * Leg rows are swapped to make walk frames.
  */
 const MADHU_FRONT_TOP: PixelMap = [
   '................',
-  '......oooo......',
-  '.....okkkko.....',
-  '....okkKKkko....',
+  '................',
+  '.....oooooo.....',
   '....okkkkkko....',
-  '....okssssko....',
-  '....okossoko....', // eyes
-  '....oksSSsko....',
-  '....kossssok....',
-  '....kkoSSokk....',
-  '...okyyttyyko...',
-  '..oyyyyttyyyyo..',
-  '..oyykyttyyyyo..',
-  '..oyyyyttyyyyo..',
-  '.osyyyyttyyyyso.',
-  '..oyyyBBBByyyo..',
-  '...oyBBBBBByo...',
+  '...okkKKkkkko...',
+  '..okkKkkkkkkko..',
+  '..okkkkkkkkkko..',
+  '..okkkssssskko..', // side-swept fringe
+  '..okssssssssko..',
+  '..oksowssowsko..', // eyes with a sparkle
+  '..oksoossoosko..',
+  '..okxssSSssxko..', // blush and a small smile
+  '..kkossssssokk..',
+  '..kk.oossoo.kk..',
+  '..kkoyyttyyokk..', // braid over both shoulders, mustard cardigan, teal top
+  '...koyyttyyok...',
+  '...osyyttyyso...',
+  '....oyyyyyyo....',
   '....oBBBBBBo....',
 ];
-const MADHU_FRONT_BLINK_ROW = '....okSssSko....';
+const MADHU_FRONT_BLINK: Record<string, string> = {
+  '..oksowssowsko..': '..okssssssssko..',
+  '..oksoossoosko..': '..oksSSssSSsko..',
+};
 
 const MADHU_BACK_TOP: PixelMap = [
   '................',
-  '......oooo......',
-  '.....okkkko.....',
-  '....okkKKkko....',
+  '................',
+  '.....oooooo.....',
   '....okkkkkko....',
-  '....okkKkkko....',
-  '....okkkkkko....',
-  '....okkkkkko....',
-  '.....okkkko.....',
-  '.....oSkkSo.....',
+  '...okkKKkkkko...',
+  '..okkKkkkkkkko..',
+  '..okkkkkKkkkko..',
+  '..okkkkkkkkkko..',
+  '..okkKkkkkkkko..',
+  '..okkkkkkkkkko..',
+  '..okkkkkkkkkko..',
+  '..okkkkkKkkkko..',
+  '...okkkkkkkko...',
+  '....oskkkkso....',
+  '...oyyykkyyyo...', // braid down the back
   '...oyyykkyyyo...',
-  '..oyyyykkyyyyo..',
-  '..oyyyykkyyyyo..',
-  '..oyyyyykyyyyo..',
-  '.osyyyyyyyyyyso.',
-  '..oyyyyyyyyyyo..',
-  '...oyBBBBBByo...',
+  '...osyyykyyso...',
+  '....oyyyyyyo....',
   '....oBBBBBBo....',
 ];
 
 const MADHU_SIDE_TOP: PixelMap = [
   '................',
-  '......oooo......',
-  '.....okkkko.....',
-  '....okkKKkko....',
+  '................',
+  '.....oooooo.....',
   '....okkkkkko....',
-  '....okkkssssso..',
-  '....okkksossso..',
-  '....okkkssssso..',
-  '....okkksSsso...',
-  '....kokkSSo.....',
-  '....kokyyyyto...',
-  '....kokyyyyto...',
-  '....okyyyyyyo...',
-  '....oyyysyyyo...',
-  '....oyyysyyyo...',
-  '....oyyyyyyyo...',
-  '.....oBBBBBo....',
-  '.....oBBBBBo....',
+  '...okkKKkkkko...',
+  '..okkKkkkkkkko..',
+  '..okkkkkkkkkko..',
+  '..okkkkkksssso..',
+  '..okkkkkssssso..',
+  '..okkkkksowsso..',
+  '..okkkkksoosso..',
+  '..okkkkkssxsso..',
+  '..kkkkkksSsso...',
+  '..kkk.ossso.....',
+  '...kkoyyyyto....',
+  '....koyyyyto....',
+  '....oyyysyyo....',
+  '....oyyyyyyo....',
+  '.....oBBBBo.....',
 ];
-const MADHU_SIDE_BLINK_ROW = '....okkksSssso..';
+const MADHU_SIDE_BLINK: Record<string, string> = {
+  '..okkkkksowsso..': '..okkkkkssssso..',
+  '..okkkkksoosso..': '..okkkkksSSsso..',
+};
 
 const LEGS_FRONT = {
-  stand: ['....oBBooBBo....', '....oBBooBBo....', '....oBBooBBo....', '....oDDooDDo....', '...oDDDooDDDo...'],
-  stepL: ['....oBBooBBo....', '....oBBooBBo....', '....oDDooBBo....', '...oDDDooDDo....', '........oDDDo...'],
-  stepR: ['....oBBooBBo....', '....oBBooBBo....', '....oBBooDDo....', '....oDDooDDDo...', '...oDDDo........'],
+  stand: ['....oBBooBBo....', '....oBBooBBo....', '....oDDooDDo....', '...oDDDooDDDo...'],
+  stepL: ['....oBBooBBo....', '....oDDooBBo....', '...oDDDooDDo....', '........oDDDo...'],
+  stepR: ['....oBBooBBo....', '....oBBooDDo....', '....oDDooDDDo...', '...oDDDo........'],
 };
 const LEGS_SIDE = {
-  stand: ['.....oBBBBo.....', '.....oBBBBo.....', '.....oBBBBo.....', '.....oDDDDo.....', '.....oDDDDDo....'],
-  stride: ['....oBBBBBo.....', '...oBBooBBBo....', '...oBo...oBBo...', '..oDDo....oDDo..', '..oDDo....oDDDo.'],
+  stand: ['.....oBBBBo.....', '.....oBBBBo.....', '.....oDDDDo.....', '.....oDDDDDo....'],
+  stride: ['....oBBooBBo....', '...oBBo..oBBo...', '..oDDo....oDDo..', '..oDDo....oDDDo.'],
 };
 
 function compose(top: PixelMap, legs: PixelMap): PixelMap {
   return [...top, ...legs, '................'];
 }
 
-function withRow(map: PixelMap, index: number, row: string): PixelMap {
-  const copy = [...map];
-  copy[index] = row;
-  return copy;
+function blink(map: PixelMap, swaps: Record<string, string>): PixelMap {
+  return map.map((row) => swaps[row] ?? row);
 }
 
 function mirror(map: PixelMap): PixelMap {
@@ -95,9 +103,8 @@ function mirror(map: PixelMap): PixelMap {
 
 /** Bobs the body down by a pixel on contact frames, for a gentle walk. */
 function bob(map: PixelMap): PixelMap {
-  const top = map.slice(0, 18);
-  const legs = map.slice(18);
-  return [...['................'], ...top.slice(0, 17), ...legs];
+  const topLen = MADHU_FRONT_TOP.length;
+  return ['................', ...map.slice(0, topLen - 1), ...map.slice(topLen)];
 }
 
 export function madhuFrames(): Record<string, PixelMap[]> {
@@ -105,6 +112,7 @@ export function madhuFrames(): Record<string, PixelMap[]> {
   const back = compose(MADHU_BACK_TOP, LEGS_FRONT.stand);
   const side = compose(MADHU_SIDE_TOP, LEGS_SIDE.stand);
   const sideStride = compose(MADHU_SIDE_TOP, LEGS_SIDE.stride);
+  const sideBlink = blink(side, MADHU_SIDE_BLINK);
 
   const walkDown = [
     front,
@@ -121,10 +129,10 @@ export function madhuFrames(): Record<string, PixelMap[]> {
   const walkRight = [side, bob(sideStride), side, bob(sideStride)];
 
   return {
-    char_madhu_idle_down: [front, withRow(front, 6, MADHU_FRONT_BLINK_ROW)],
+    char_madhu_idle_down: [front, blink(front, MADHU_FRONT_BLINK)],
     char_madhu_idle_up: [back, back],
-    char_madhu_idle_right: [side, withRow(side, 6, MADHU_SIDE_BLINK_ROW)],
-    char_madhu_idle_left: [mirror(side), mirror(withRow(side, 6, MADHU_SIDE_BLINK_ROW))],
+    char_madhu_idle_right: [side, sideBlink],
+    char_madhu_idle_left: [mirror(side), mirror(sideBlink)],
     char_madhu_walk_down: walkDown,
     char_madhu_walk_up: walkUp,
     char_madhu_walk_right: walkRight,

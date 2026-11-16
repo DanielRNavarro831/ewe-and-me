@@ -69,38 +69,40 @@ export function sheepFrames(face = 'l', fleece = 'f', fleeceShade = 'F'): Record
  * Iroh: larger and rounder; his left ear (viewer's right) is snipped at the tip.
  * Mango: smaller and slimmer with a lighter cream muzzle and light-green eyes.
  */
+// Cute style: big eyes with a sparkle and rosy cheeks.
 const IROH_SIT: PixelMap = [
-  '...o............',
-  '..oco......ooo..',
-  '..occo....occo..',
-  '..occcooooccco..',
-  '..ocCccccccCco..',
-  '..occyccccycco..',
-  '..occeexxeecco..',
-  '...occeeeecco...',
-  '...ocCcccCcco...',
-  '..occceeeeccco..',
-  '..occceeeecccoCo',
-  '...oeeooooeeo...',
+  '..o.........oo..', // left ear (viewer's right) snipped flat
+  '..oco......oco..',
+  '..occoooooocco..',
+  '.occCccccccCcco.',
+  '.occowccccowcco.',
+  '.occyyccccyycco.', // amber eyes
+  '.oxceeexxeeecxo.',
+  '..occeeeeeecco..',
+  '..ocCcceecCcco..',
+  '.occcceeeecccoCo',
+  '.occcceeeecccoCo',
+  '..oeeooooooeeo..',
 ];
 
 const MANGO_SIT: PixelMap = [
   '................',
-  '....o......o....',
+  '...o........o...',
   '...oco....oco...',
   '...occoooocco...',
-  '...ocCccccCco...',
-  '...ocHccccHco...',
-  '...ocffxxffco...',
-  '....ocffffco....',
-  '....ocCccCco....',
+  '..ocowccccowco..',
+  '..ocHHccccHHco..', // light-green eyes
+  '..oxcffxxffcxo..', // lighter cream muzzle
+  '...occffffcco...',
+  '....ocCffCco....',
   '....occffcco....',
   '....occffccoCo..',
   '.....offoffo....',
 ];
 
+/** Closes the eyes: iris and sparkle become fur, leaving a soft lash line. */
 function blink(map: PixelMap, eye: string): PixelMap {
-  return recolor(map, { [eye]: 'C' });
+  return recolor(map, { [eye]: 'C', w: 'c' });
 }
 
 /** Sleeping loaf pose, generated from the palette so both cats share a shape. */
@@ -111,6 +113,7 @@ function sleepFrame(big: boolean, muzzle: string): PixelMap {
   g.ellipse(big ? 3.5 : 4.5, 7, 2.6, 2.3, 'c');
   g.set(big ? 3 : 4, 8, muzzle).set(big ? 4 : 5, 8, muzzle);
   g.line(big ? 2 : 3, 7, big ? 3 : 4, 7, 'C'); // closed eye
+  g.set(big ? 5 : 6, 8, 'x'); // rosy cheek
   g.outline('o');
   g.set(13, 10, 'C').set(14, 10, 'C').set(14, 9, 'C'); // tail curl
   return g.rows();
