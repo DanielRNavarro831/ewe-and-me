@@ -1,5 +1,6 @@
 import type { PixelMap } from './grid';
-import { madhuFrames } from './characters';
+import { madhuFrames, villagerFrames } from './characters';
+import { VILLAGERS } from '../data/customers';
 import { sheepFrames, catFrames } from './animals';
 import { grassTile, woodFloorTile, wallTile, dirtPathTile, fenceTile, windowSprite } from './tiles';
 import * as props from './props';
@@ -44,6 +45,9 @@ export function buildPlaceholders(): Record<string, PixelMap[]> {
     prop_book_stand: [props.bookStand()],
     prop_yarn_basket: [props.yarnBasket()],
     prop_carding_bench: [props.cardingBench()],
+    prop_skein: [props.skein()],
+    prop_shop_door: [props.shopDoor()],
+    ...Object.assign({}, ...VILLAGERS.map((v) => villagerFrames(v.id, v))),
     prop_niddy_noddy: [props.niddyNoddy()],
     icon_ranch: [iconRanch()],
     icon_workshop: [iconWorkshop()],

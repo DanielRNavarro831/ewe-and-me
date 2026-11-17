@@ -38,6 +38,8 @@ export interface Breed {
   sprite: string;
   /** Purchase price in the shop ($); null for the starting animal only. */
   price: number | null;
+  /** Shop price for 100 g of handspun yarn, before multipliers ($). */
+  basePer100g: number;
 }
 
 const WHITE: NaturalColor = { id: 'white', name: 'White', hex: '#FFF8EC', shade: '#E6DCCB' };
@@ -62,6 +64,7 @@ export const BREEDS: Breed[] = [
       'Short staples card beautifully into airy rolags.',
     sprite: 'sheep_merino',
     price: 120,
+    basePer100g: 22,
   },
   {
     id: 'shetland',
@@ -87,6 +90,7 @@ export const BREEDS: Breed[] = [
     blurb: 'A hardy little island breed with soft, light fleece in a whole family of named natural shades.',
     sprite: 'sheep_shetland',
     price: 180,
+    basePer100g: 20,
   },
   {
     id: 'bfl',
@@ -105,6 +109,7 @@ export const BREEDS: Breed[] = [
     blurb: 'A longwool with purled locks and lovely luster. Combs into silky top and takes dye with real brilliance.',
     sprite: 'sheep_bfl',
     price: 250,
+    basePer100g: 24,
   },
 ];
 

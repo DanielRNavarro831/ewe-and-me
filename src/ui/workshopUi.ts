@@ -7,6 +7,7 @@ import { gradeOf } from '../systems/quality';
 import { unlock } from '../systems/achievements';
 import { playSfx } from '../systems/audio';
 import { openModal, el, toast } from './modal';
+import { isOnShelf, priceOf } from '../systems/economy';
 
 function btn(label: string, onClick: () => void, className = 'btn'): HTMLButtonElement {
   const b = el('button', { className, textContent: label });
@@ -333,13 +334,15 @@ function yarnRow(y: Yarn, rerender: () => void): HTMLElement {
     if (game.state.stats.frogged >= 10) unlock('frog_pond');
     rerender();
   }, 'btn small');
+  const onShelf = isOnShelf(game.state, y.id);
   return el('li', {}, [
     swatch(hex),
     el('div', {}, [
       el('strong', { textContent: yarnName(y) }),
       el('small', { textContent: details.join(' · ') }),
       el('span', { className: `grade ${y.grade.toLowerCase()}`, textContent: `${y.grade} (${y.score})` }),
+      ...(onShelf ? [el('small', { className: 'next', textContent: `On a shop shelf · $${priceOf(y, game.state).price}` })] : []),
     ]),
-    frogBtn,
+    onShelf ? el('span') : frogBtn,
   ]);
 }

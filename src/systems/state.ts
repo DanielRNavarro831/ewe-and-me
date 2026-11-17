@@ -8,7 +8,7 @@
  * Old saves are then upgraded step by step on load, so nothing is ever lost.
  */
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 
 export type SceneKey = 'Ranch' | 'Workshop' | 'DyeStudio' | 'Shop' | 'Stash' | 'Collection';
 
@@ -110,6 +110,29 @@ export interface Yarn {
   dye: null | { colorway: string; lot: string; technique: string; hex: string };
 }
 
+export interface Sale {
+  yarnId: string;
+  name: string;
+  price: number;
+  tip: number;
+  /** 'customer' while Madhu's in, 'daniel' for his away-sales. */
+  by: 'customer' | 'daniel';
+  at: number;
+}
+
+export interface ShopState {
+  /** Number of shelf slots (6 to start). */
+  slots: number;
+  /** Yarn id on each slot, or null. */
+  shelf: (string | null)[];
+  /** Price nudge per yarn id, −0.3..+0.3. */
+  nudges: Record<string, number>;
+  /** Fractional away-sales Daniel has "earned" but not used yet. */
+  awayCredit: number;
+  /** Recent sales, newest last (kept to 60). */
+  sales: Sale[];
+}
+
 export interface GameState {
   version: number;
   createdAt: number;
@@ -132,6 +155,7 @@ export interface GameState {
   yarns: Yarn[];
   /** Achievement ids earned. */
   achievements: string[];
+  shop: ShopState;
   nextId: number;
   settings: Settings;
   stats: {
@@ -141,7 +165,13 @@ export interface GameState {
     pets: number;
     skeins: number;
     frogged: number;
+    sold: number;
+    earned: number;
   };
+}
+
+export function newShop(): ShopState {
+  return { slots: 6, shelf: [null, null, null, null, null, null], nudges: {}, awayCredit: 0, sales: [] };
 }
 
 export function starterSheep(now: number, id = 'a1'): Animal {
@@ -178,6 +208,7 @@ export function newGame(now: number): GameState {
     fiber: [],
     yarns: [],
     achievements: [],
+    shop: newShop(),
     nextId: 2,
     settings: {
       musicVolume: 0.6,
@@ -186,7 +217,7 @@ export function newGame(now: number): GameState {
       knittingCircleDay: 6,
       debugTimeOffsetMs: 0,
     },
-    stats: { launches: 0, saves: 0, shorn: 0, pets: 0, skeins: 0, frogged: 0 },
+    stats: { launches: 0, saves: 0, shorn: 0, pets: 0, skeins: 0, frogged: 0, sold: 0, earned: 0 },
   };
 }
 
@@ -231,6 +262,8 @@ const MIGRATIONS: Record<number, Migration> = {
       stats: { ...rest.stats, skeins: 0, frogged: 0 },
     };
   },
+  // v3 → v4 (M3 Shop): shelves, price nudges and the sales ledger.
+  3: (s) => ({ ...s, version: 4, shop: newShop(), stats: { ...s.stats, sold: 0, earned: 0 } }),
 };
 
 export class SaveTooNewError extends Error {}
@@ -264,6 +297,7 @@ export function migrate(raw: any): GameState {
     fiber: Array.isArray(s.fiber) ? s.fiber : [],
     yarns: Array.isArray(s.yarns) ? s.yarns : [],
     achievements: Array.isArray(s.achievements) ? s.achievements : [],
+    shop: { ...newShop(), ...(s.shop ?? {}) },
   };
 }
 

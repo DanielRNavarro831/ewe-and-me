@@ -11,7 +11,7 @@ runs full-screen and offline, like a normal app.
 - [x] **M0 – Foundation:** PWA install, pixel-perfect scaling, tab bar, save/load with backup codes, clock and lighting, palette, code-drawn sprites with art overrides
 - [x] **M1 – Ranch:** Merino fleece growth (computed while closed), naming, petting, brushing, hay trough, shear minigame with second cuts, fleece quality and grades
 - [x] **M2 – Workshop:** skirting, scouring (with felting), hand carding, spinning (treadle + drafting, woolen/worsted, whorl ratios, art yarn), plying (2/3-ply and chain-ply), finishing (niddy-noddy, ties, soak, thwack, WPI), graded skeins, Stash screen with frogging
-- [ ] M3 – Shop
+- [x] **M3 – Shop:** six shelf slots with price nudges, the design-doc pricing formula with seasonal demand, walk-in customers with preferences (tips and reputation for strong matches), sales ledger, Daniel's away-sales with a note on return
 - [ ] M4 – Dye Studio
 - [ ] M5 – Village
 - [ ] M6 – Progression

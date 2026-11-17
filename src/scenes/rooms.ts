@@ -5,6 +5,7 @@ import { breed, naturalColor } from '../data/breeds';
 import Phaser from 'phaser';
 import { RanchScene } from './Ranch';
 import { WorkshopScene } from './Workshop';
+import { ShopScene } from './Shop';
 import { openStash } from '../ui/workshopUi';
 import { showHint } from '../ui/modal';
 
@@ -24,21 +25,6 @@ export class DyeStudioScene extends RoomScene {
     this.wallProp(150, 8, 'prop_dye_shelf');
     this.floorProp(120, 170, 'prop_dye_stove');
     this.floorProp(226, 164, 'prop_drying_rack');
-  }
-}
-
-export class ShopScene extends RoomScene {
-  constructor() {
-    super({ key: 'Shop', wall: 'tile_wall_rose', floor: 'tile_wood_floor' });
-  }
-  protected decorate(): void {
-    this.addWindow(this.W - 36);
-    // empty shelves on the back wall (6 slots to start)
-    for (let row = 0; row < 2; row++) for (let s = 0; s < 3; s++) this.wallProp(8 + s * 52, 12 + row * 24, 'prop_shop_shelf');
-    this.floorProp(205, 172, 'prop_counter');
-    // Iroh napping on the counter
-    this.add.sprite(200, 144, 'cat_iroh_sleep').setOrigin(0.5, 1).setDepth(173).play('cat_iroh_sleep');
-    this.floorProp(70, 268, 'prop_knitting_table');
   }
 }
 

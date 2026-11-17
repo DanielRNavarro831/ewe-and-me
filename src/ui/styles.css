@@ -513,6 +513,67 @@ h3.sub {
   opacity: 0.5;
 }
 
+/* ---------- shop ---------- */
+.skein-head {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+.skein-head > div {
+  display: flex;
+  flex-direction: column;
+}
+.skein-head small {
+  color: var(--mid);
+  font-size: 13px;
+}
+.price {
+  font-size: 24px;
+  color: var(--wood);
+}
+ul.ledger {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+ul.ledger li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--light);
+  font-size: 15px;
+}
+ul.ledger small {
+  grid-column: 1 / 3;
+  color: var(--mid);
+  font-size: 13px;
+}
+blockquote.note {
+  margin: 10px 0;
+  padding: 12px 14px;
+  background: #fff8ec;
+  border: 2px dashed var(--soft);
+  border-radius: 6px;
+  font-size: 16px;
+  transform: rotate(-0.6deg);
+  white-space: pre-line;
+}
+#money.bump {
+  animation: bump 0.4s ease-out;
+}
+@keyframes bump {
+  40% {
+    transform: scale(1.18);
+  }
+}
+#rep {
+  font-size: 15px;
+  color: var(--paper);
+  padding: 4px 8px;
+}
+
 /* ---------- minigame controls ---------- */
 #mg-controls {
   position: absolute;

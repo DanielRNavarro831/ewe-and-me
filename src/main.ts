@@ -16,6 +16,7 @@ import { PlyScene } from './minigames/Ply';
 import { FinishScene } from './minigames/Finish';
 import { buildHud, updateHud } from './ui/hud';
 import { unlockAudio } from './systems/audio';
+import { startShopService } from './systems/shopService';
 import type { SceneKey } from './systems/state';
 import './ui/install';
 
@@ -77,6 +78,7 @@ async function start(): Promise<void> {
         phaser.scene.add(mg.sys.settings.key, mg, false);
       }
       buildHud(phaser, boot, switchTo);
+      startShopService(phaser);
       phaser.scene.start(game.state.currentScene);
       document.getElementById('loading')?.remove();
     }),

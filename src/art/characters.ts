@@ -1,4 +1,4 @@
-import { Grid, type PixelMap } from './grid';
+import { Grid, recolor, type PixelMap } from './grid';
 
 /**
  * Madhu, 16x24, in a cute chibi style: big head, big sparkly eyes, rosy cheeks.
@@ -138,4 +138,49 @@ export function madhuFrames(): Record<string, PixelMap[]> {
     char_madhu_walk_right: walkRight,
     char_madhu_walk_left: walkRight.map(mirror),
   };
+}
+
+/* ---------- villagers (walk-in customers) ---------- */
+
+export interface VillagerColors {
+  skin: string;
+  shade: string;
+  hair: string;
+  hairHi: string;
+  shirt: string;
+  accent: string;
+  pants: string;
+  shortHair: boolean;
+}
+
+/** Turns Madhu's long braid into a short cut, for variety. */
+function shortHairFront(top: PixelMap): PixelMap {
+  return top.map((row, i) => (i >= 12 && i <= 15 ? row.replace(/k/g, '.') : row));
+}
+function shortHairBack(top: PixelMap): PixelMap {
+  return top.map((row, i) => (i === 13 ? row.replace(/k/g, 's') : i >= 14 && i <= 16 ? row.replace(/k/g, 'y') : row));
+}
+
+/**
+ * Villagers reuse Madhu's chibi body with their own colors and hair, so every
+ * character in the village shares one style. Walking down (toward the door) and up.
+ */
+export function villagerFrames(id: string, c: VillagerColors): Record<string, PixelMap[]> {
+  const front = c.shortHair ? shortHairFront(MADHU_FRONT_TOP) : MADHU_FRONT_TOP;
+  const back = c.shortHair ? shortHairBack(MADHU_BACK_TOP) : MADHU_BACK_TOP;
+  const swap = { k: c.hair, K: c.hairHi, s: c.skin, S: c.shade, y: c.shirt, t: c.accent, B: c.pants };
+  const tone = (m: PixelMap) => recolor(m, swap);
+  const down = [
+    compose(front, LEGS_FRONT.stand),
+    bob(compose(front, LEGS_FRONT.stepL)),
+    compose(front, LEGS_FRONT.stand),
+    bob(compose(front, LEGS_FRONT.stepR)),
+  ].map(tone);
+  const up = [
+    compose(back, LEGS_FRONT.stand),
+    bob(compose(back, LEGS_FRONT.stepR)),
+    compose(back, LEGS_FRONT.stand),
+    bob(compose(back, LEGS_FRONT.stepL)),
+  ].map(tone);
+  return { [`char_${id}_walk_down`]: down, [`char_${id}_walk_up`]: up };
 }

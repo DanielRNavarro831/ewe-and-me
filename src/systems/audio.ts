@@ -45,6 +45,10 @@ const RECIPES: Record<string, Tone[]> = {
     { f: 110, to: 70, d: 0.15, type: 'sine', v: 0.25 },
   ],
   purr: [{ f: 55, d: 0.6, type: 'sawtooth', v: 0.08, wobble: 6 }],
+  shop_bell: [
+    { f: 1568, d: 0.35, type: 'sine', v: 0.18 },
+    { f: 2093, d: 0.45, type: 'sine', v: 0.14, delay: 0.09 },
+  ],
   treadle_tap: [{ f: 180, to: 120, d: 0.07, type: 'triangle', v: 0.3 }],
   ply_twist: [
     { f: 160, to: 120, d: 0.06, type: 'triangle', v: 0.25 },

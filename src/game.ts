@@ -55,6 +55,14 @@ class Game {
     this.away = { ms, dailyRefreshes };
     this.state.lastSeenAt = Math.max(this.state.lastSeenAt, now);
     this.changed();
+    for (const l of this.resumeListeners) l(ms);
+  }
+
+  private resumeListeners = new Set<(awayMs: number) => void>();
+
+  /** Called with the time away whenever the game comes back to the foreground. */
+  onResume(l: (awayMs: number) => void): void {
+    this.resumeListeners.add(l);
   }
 
   /** Call after any meaningful change. */

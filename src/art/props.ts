@@ -185,6 +185,32 @@ export function bookStand(): PixelMap {
   });
 }
 
+/**
+ * A twisted skein, drawn in near-white so the game can tint it any yarn color.
+ * (Tinting multiplies, so the dark outline stays dark.)
+ */
+export function skein(): PixelMap {
+  return outlined(16, 10, (g) => {
+    g.rect(1, 1, 12, 6, 'w');
+    g.rect(0, 2, 14, 4, 'w');
+    for (let x = 1; x < 13; x += 3) g.set(x, 2, 'F').set(x + 1, 3, 'F').set(x + 2, 4, 'F');
+    g.rect(1, 6, 12, 1, 'F');
+  });
+}
+
+/** The shop's front door, set into the back wall, with a little window and a bell. */
+export function shopDoor(): PixelMap {
+  return outlined(26, 44, (g) => {
+    g.rect(0, 0, 24, 42, 'D');
+    g.rect(2, 2, 20, 40, 'W');
+    g.rect(4, 4, 16, 12, 'b');
+    g.rect(4, 4, 16, 1, 'w').rect(11, 4, 2, 12, 'W');
+    g.rect(4, 19, 16, 9, 'L').rect(4, 30, 16, 10, 'L');
+    g.rect(18, 24, 2, 2, 'y'); // knob
+    g.rect(10, 0, 4, 2, 'y'); // shop bell
+  });
+}
+
 /** A low stool holding a pair of hand cards. */
 export function cardingBench(): PixelMap {
   return outlined(36, 30, (g) => {

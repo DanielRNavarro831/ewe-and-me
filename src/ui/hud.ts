@@ -83,5 +83,12 @@ export function updateHud(): void {
   const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   const day = d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
   document.getElementById('clock')!.textContent = `${SEASON_EMOJI[season]} ${day} · ${time}`;
-  document.getElementById('money')!.textContent = `$${s.money}`;
+  const money = document.getElementById('money')!;
+  if (money.textContent !== `$${s.money}`) {
+    money.textContent = `$${s.money}`;
+    money.classList.remove('bump');
+    void money.offsetWidth; // restart the little bump animation
+    money.classList.add('bump');
+  }
+  document.getElementById('rep')!.textContent = `★ ${s.reputation}`;
 }
