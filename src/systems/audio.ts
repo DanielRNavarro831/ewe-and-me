@@ -45,6 +45,20 @@ const RECIPES: Record<string, Tone[]> = {
     { f: 110, to: 70, d: 0.15, type: 'sine', v: 0.25 },
   ],
   purr: [{ f: 55, d: 0.6, type: 'sawtooth', v: 0.08, wobble: 6 }],
+  treadle_tap: [{ f: 180, to: 120, d: 0.07, type: 'triangle', v: 0.3 }],
+  ply_twist: [
+    { f: 160, to: 120, d: 0.06, type: 'triangle', v: 0.25 },
+    { f: 2400, d: 0.05, type: 'noise', v: 0.08, delay: 0.02 },
+  ],
+  niddy_wrap: [{ f: 900, to: 1400, d: 0.05, type: 'noise', v: 0.12 }],
+  thwack: [
+    { f: 700, d: 0.06, type: 'noise', v: 0.5 },
+    { f: 140, to: 80, d: 0.12, type: 'sine', v: 0.35 },
+  ],
+  water_slosh: [
+    { f: 500, d: 0.3, type: 'noise', v: 0.25 },
+    { f: 350, d: 0.25, type: 'noise', v: 0.15, delay: 0.15 },
+  ],
   felt_oops: [{ f: 400, to: 250, d: 0.25, type: 'triangle', v: 0.2 }],
 };
 

@@ -8,7 +8,7 @@
  * Old saves are then upgraded step by step on load, so nothing is ever lost.
  */
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 
 export type SceneKey = 'Ranch' | 'Workshop' | 'DyeStudio' | 'Shop' | 'Stash' | 'Collection';
 
@@ -47,21 +47,67 @@ export interface Animal {
 
 export type Grade = 'Common' | 'Fine' | 'Superior' | 'Masterwork';
 
-/** A raw fleece straight off the sheep, before skirting and scouring. */
-export interface Fleece {
+export type FiberKind = 'fleece' | 'skirted' | 'clean' | 'felt' | 'rolags' | 'top' | 'singles' | 'plied';
+export type Prep = 'woolen' | 'worsted' | 'semi-worsted';
+
+/**
+ * Any fiber on its way to becoming yarn: a raw fleece, a skirted fleece, clean
+ * (scoured) wool, a felt batt, rolags, bobbins of singles or plied yarn.
+ * Each processing step replaces the item with the next kind.
+ */
+export interface FiberItem {
   id: string;
+  kind: FiberKind;
   breedId: string;
   colorId: string;
   /** Name of the animal it came from. */
   from: string;
-  rawGrams: number;
+  grams: number;
   stapleCm: number;
-  /** Quality before skirting; skirting adds its bonus in M2. */
+  /** Fiber quality so far, 0..100 (fleece score, plus skirting, minus scouring trouble…). */
+  score: number;
+  createdAt: number;
+  tags: string[];
+  /** Set at shearing. */
+  rawGrams?: number;
+  secondCuts?: number;
+  parts?: { happiness: number; feed: number; growth: number; vm: number; secondCuts: number };
+  /** Set at skirting (0..20). */
+  skirtBonus?: number;
+  /** Set when spun. */
+  prep?: Prep;
+  wpi?: number;
+  evenness?: number;
+  twist?: 'under' | 'balanced' | 'over';
+  /** Set when plied. */
+  plies?: number;
+  chainPlied?: boolean;
+  plyBalance?: number;
+}
+
+/** A finished, labeled skein. */
+export interface Yarn {
+  id: string;
+  breedId: string;
+  colorId: string;
+  from: string;
+  prep: Prep;
+  plies: number;
+  chainPlied: boolean;
+  wpi: number;
+  weightId: string;
+  grams: number;
+  yards: number;
+  evenness: number;
+  /** 0..100, or null for singles. */
+  plyBalance: number | null;
+  balanced: boolean;
   score: number;
   grade: Grade;
-  parts: { happiness: number; feed: number; growth: number; vm: number; secondCuts: number };
-  secondCuts: number;
-  shornAt: number;
+  tags: string[];
+  madeAt: number;
+  /** Filled in by the Dye Studio (M4). */
+  dye: null | { colorway: string; lot: string; technique: string; hex: string };
 }
 
 export interface GameState {
@@ -80,7 +126,12 @@ export interface GameState {
   animals: Animal[];
   /** Until when each feed is in the trough (timestamps; 0 = empty). */
   feed: { hayUntil: number; alfalfaUntil: number; grainUntil: number };
-  fleeces: Fleece[];
+  /** Fiber in progress, from raw fleece to bobbins. */
+  fiber: FiberItem[];
+  /** Finished skeins. */
+  yarns: Yarn[];
+  /** Achievement ids earned. */
+  achievements: string[];
   nextId: number;
   settings: Settings;
   stats: {
@@ -88,6 +139,8 @@ export interface GameState {
     saves: number;
     shorn: number;
     pets: number;
+    skeins: number;
+    frogged: number;
   };
 }
 
@@ -122,7 +175,9 @@ export function newGame(now: number): GameState {
     positions: {},
     animals: [starterSheep(now)],
     feed: { hayUntil: 0, alfalfaUntil: 0, grainUntil: 0 },
-    fleeces: [],
+    fiber: [],
+    yarns: [],
+    achievements: [],
     nextId: 2,
     settings: {
       musicVolume: 0.6,
@@ -131,7 +186,7 @@ export function newGame(now: number): GameState {
       knittingCircleDay: 6,
       debugTimeOffsetMs: 0,
     },
-    stats: { launches: 0, saves: 0, shorn: 0, pets: 0 },
+    stats: { launches: 0, saves: 0, shorn: 0, pets: 0, skeins: 0, frogged: 0 },
   };
 }
 
@@ -149,6 +204,33 @@ const MIGRATIONS: Record<number, Migration> = {
     nextId: 2,
     stats: { ...s.stats, shorn: 0, pets: 0 },
   }),
+  // v2 → v3 (M2 Workshop): raw fleeces join a general fiber list; skeins and achievements arrive.
+  2: (s) => {
+    const { fleeces = [], ...rest } = s;
+    const achievements = (rest.stats?.shorn ?? 0) > 0 ? ['first_fleece'] : [];
+    return {
+      ...rest,
+      version: 3,
+      fiber: fleeces.map((f: any) => ({
+        id: f.id,
+        kind: 'fleece',
+        breedId: f.breedId,
+        colorId: f.colorId,
+        from: f.from,
+        grams: f.rawGrams,
+        rawGrams: f.rawGrams,
+        stapleCm: f.stapleCm,
+        score: f.score,
+        createdAt: f.shornAt,
+        tags: [],
+        secondCuts: f.secondCuts,
+        parts: f.parts,
+      })),
+      yarns: [],
+      achievements,
+      stats: { ...rest.stats, skeins: 0, frogged: 0 },
+    };
+  },
 };
 
 export class SaveTooNewError extends Error {}
@@ -179,7 +261,9 @@ export function migrate(raw: any): GameState {
     feed: { ...base.feed, ...(s.feed ?? {}) },
     positions: { ...(s.positions ?? {}) },
     animals: Array.isArray(s.animals) ? s.animals : base.animals,
-    fleeces: Array.isArray(s.fleeces) ? s.fleeces : [],
+    fiber: Array.isArray(s.fiber) ? s.fiber : [],
+    yarns: Array.isArray(s.yarns) ? s.yarns : [],
+    achievements: Array.isArray(s.achievements) ? s.achievements : [],
   };
 }
 

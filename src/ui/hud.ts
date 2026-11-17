@@ -35,6 +35,11 @@ export function setTitleOverride(title: string | null): void {
   updateHud();
 }
 
+/** Clears the override only if it's still the given title (another scene may have set its own). */
+export function clearTitleOverride(title: string): void {
+  if (titleOverride === title) setTitleOverride(null);
+}
+
 export function buildHud(phaser: Phaser.Game, boot: Phaser.Scene, onSwitch: (key: SceneKey) => void): void {
   switchScene = onSwitch;
   const tabbar = document.getElementById('tabbar')!;

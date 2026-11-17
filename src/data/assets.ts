@@ -84,6 +84,8 @@ export const SPRITES: SpriteAsset[] = [
   { key: 'prop_picture_frame', w: 26, h: 26, frames: 1, description: 'an empty wooden frame on the finished-objects wall' },
   { key: 'prop_book_stand', w: 30, h: 32, frames: 1, description: 'a wooden lectern holding an open lavender breed book' },
   { key: 'prop_yarn_basket', w: 30, h: 22, frames: 1, description: 'a woven basket holding one ball of teal yarn' },
+  { key: 'prop_carding_bench', w: 36, h: 30, frames: 1, description: 'a low wooden stool holding a crossed pair of wool hand cards' },
+  { key: 'prop_niddy_noddy', w: 30, h: 30, frames: 1, description: 'a wooden niddy-noddy hanging on the wall, with a few wraps of mustard yarn' },
   { key: 'icon_ranch', w: 16, h: 16, frames: 1, description: 'icon: a fluffy sheep face' },
   { key: 'icon_workshop', w: 16, h: 16, frames: 1, description: 'icon: a wooden spinning wheel' },
   { key: 'icon_dye', w: 16, h: 16, frames: 1, description: 'icon: a steaming dye pot' },

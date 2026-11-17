@@ -8,6 +8,12 @@ import { computeLayout } from './layout';
 import { BootScene } from './scenes/Boot';
 import { ROOMS } from './scenes/rooms';
 import { ShearScene } from './minigames/Shear';
+import { SkirtScene } from './minigames/Skirt';
+import { ScourScene } from './minigames/Scour';
+import { CardScene } from './minigames/Card';
+import { SpinScene } from './minigames/Spin';
+import { PlyScene } from './minigames/Ply';
+import { FinishScene } from './minigames/Finish';
 import { buildHud, updateHud } from './ui/hud';
 import { unlockAudio } from './systems/audio';
 import type { SceneKey } from './systems/state';
@@ -66,6 +72,10 @@ async function start(): Promise<void> {
         phaser.scene.add(room.sys.settings.key, room, false);
       }
       phaser.scene.add('Shear', new ShearScene(), false);
+      for (const Mg of [SkirtScene, ScourScene, CardScene, SpinScene, PlyScene, FinishScene]) {
+        const mg = new Mg();
+        phaser.scene.add(mg.sys.settings.key, mg, false);
+      }
       buildHud(phaser, boot, switchTo);
       phaser.scene.start(game.state.currentScene);
       document.getElementById('loading')?.remove();

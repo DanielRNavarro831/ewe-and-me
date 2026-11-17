@@ -185,6 +185,35 @@ export function bookStand(): PixelMap {
   });
 }
 
+/** A low stool holding a pair of hand cards. */
+export function cardingBench(): PixelMap {
+  return outlined(36, 30, (g) => {
+    // stool
+    g.rect(2, 14, 30, 4, 'L');
+    g.rect(2, 17, 30, 1, 'W');
+    g.rect(4, 18, 3, 10, 'W').rect(27, 18, 3, 10, 'W');
+    // two hand cards, crossed
+    g.rect(3, 6, 14, 8, 'n').rect(3, 5, 14, 1, 'L');
+    for (let x = 4; x < 16; x += 2) g.set(x, 8, 'g').set(x + 1, 11, 'g');
+    g.rect(17, 9, 6, 2, 'W'); // handle
+    g.rect(13, 1, 14, 8, 'n').rect(13, 0, 14, 1, 'L');
+    for (let x = 14; x < 26; x += 2) g.set(x, 3, 'g').set(x + 1, 6, 'g');
+    g.rect(27, 4, 5, 2, 'W');
+    g.rect(15, 10, 6, 3, 'f'); // a tuft of wool
+  });
+}
+
+/** A niddy-noddy hanging on the wall. */
+export function niddyNoddy(): PixelMap {
+  return outlined(30, 30, (g) => {
+    g.line(3, 25, 24, 4, 'W');
+    g.line(4, 25, 25, 4, 'L');
+    g.rect(0, 20, 9, 2, 'W');
+    g.rect(22, 0, 2, 9, 'W');
+    g.line(6, 23, 22, 6, 'y'); // a few wraps of mustard yarn
+  });
+}
+
 /** A woven basket with one ball of teal yarn, waiting for company. */
 export function yarnBasket(): PixelMap {
   return outlined(30, 22, (g) => {

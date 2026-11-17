@@ -165,31 +165,3 @@ export function openAnimalCard(a: Animal, actions: CardActions): void {
     }
   });
 }
-
-/** Raw fleeces waiting for the Workshop. (The full Stash screen arrives in M2.) */
-export function openFleeceList(): void {
-  openModal('Raw fleeces', (body) => {
-    const list = [...game.state.fleeces].reverse();
-    if (!list.length) {
-      body.append(el('p', { className: 'hint', textContent: 'No fleeces yet. Shear a sheep at the Ranch and it will wait here for skirting.' }));
-      return;
-    }
-    body.append(el('p', { className: 'hint', textContent: 'Skirting and scouring arrive with the Workshop.' }));
-    const ul = el('ul', { className: 'fleeces' });
-    for (const f of list) {
-      const b = breed(f.breedId);
-      ul.append(
-        el('li', {}, [
-          el('strong', { textContent: `${naturalColor(b, f.colorId).name} ${b.name} fleece` }),
-          el('span', { className: `grade ${f.grade.toLowerCase()}`, textContent: `${f.grade} (${f.score})` }),
-          el('small', {
-            textContent: `${f.rawGrams} g raw · ${f.stapleCm} cm staple · from ${f.from} · ${new Date(f.shornAt).toLocaleDateString()}${
-              f.secondCuts ? ` · ${f.secondCuts} second cut${f.secondCuts > 1 ? 's' : ''}` : ''
-            }`,
-          }),
-        ]),
-      );
-    }
-    body.append(ul);
-  });
-}

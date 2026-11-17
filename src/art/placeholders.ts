@@ -43,6 +43,8 @@ export function buildPlaceholders(): Record<string, PixelMap[]> {
     prop_picture_frame: [props.pictureFrame()],
     prop_book_stand: [props.bookStand()],
     prop_yarn_basket: [props.yarnBasket()],
+    prop_carding_bench: [props.cardingBench()],
+    prop_niddy_noddy: [props.niddyNoddy()],
     icon_ranch: [iconRanch()],
     icon_workshop: [iconWorkshop()],
     icon_dye: [iconDye()],

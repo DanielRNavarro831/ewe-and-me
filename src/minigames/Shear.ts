@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import { game } from '../game';
-import type { Animal, Fleece } from '../systems/state';
+import type { Animal, FiberItem } from '../systems/state';
 import { breed, naturalColor } from '../data/breeds';
-import { shearFleece } from '../systems/quality';
+import { shearFleece, gradeOf } from '../systems/quality';
+import { unlock } from '../systems/achievements';
 import { tickAnimal } from '../systems/ranch';
 import { playSfx } from '../systems/audio';
 import { hex } from '../art/palette';
-import { showHint, toast, openModal, el, type HintBar } from '../ui/modal';
-import { setTitleOverride } from '../ui/hud';
+import { showHint, openModal, el, type HintBar } from '../ui/modal';
+import { setTitleOverride, clearTitleOverride } from '../ui/hud';
 
 /**
  * Shearing: drag a finger along each highlighted blow, belly first, from tail
@@ -164,10 +165,11 @@ export class ShearScene extends Phaser.Scene {
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => this.onDrag(p, true));
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => p.isDown && this.onDrag(p, false));
     this.input.on('pointerup', () => (this.last = null));
-    setTitleOverride(`Shearing ${this.animal.name ?? ''}`.trim());
+    const title = `Shearing ${this.animal.name ?? ''}`.trim();
+    setTitleOverride(title);
     this.events.once('shutdown', () => {
       this.hint.close();
-      setTitleOverride(null);
+      clearTitleOverride(title);
     });
   }
 
@@ -341,39 +343,38 @@ export class ShearScene extends Phaser.Scene {
   }
 
   private showResult(): void {
-    const first = game.state.stats.shorn === 0;
     const a = this.animal;
-    const f: Fleece = shearFleece(game.state, a, this.secondCuts);
+    const f: FiberItem = shearFleece(game.state, a, this.secondCuts);
     void game.saveNow();
-    if (first) {
-      playSfx('achievement_chime');
-      toast('Achievement: First Fleece');
-    }
+    unlock('first_fleece');
     const b = breed(f.breedId);
+    const cuts = f.secondCuts ?? 0;
+    const raw = f.rawGrams ?? f.grams;
+    const parts = f.parts!;
     openModal(`${a.name ?? 'Her'} is shorn`, (body, close) => {
       body.append(
         el('p', {
           className: 'stat',
           textContent:
-            f.secondCuts === 0
+            cuts === 0
               ? 'Off in one piece, with no second cuts. Beautifully done.'
-              : `Off with ${f.secondCuts} second cut${f.secondCuts > 1 ? 's' : ''}. Those short snippets will pill, so they cost a little quality.`,
+              : `Off with ${cuts} second cut${cuts > 1 ? 's' : ''}. Those short snippets will pill, so they cost a little quality.`,
         }),
         el('dl', { className: 'info' }, [
           el('dt', { textContent: 'Fleece' }),
           el('dd', { textContent: `${naturalColor(b, f.colorId).name} ${b.name}` }),
           el('dt', { textContent: 'Raw weight' }),
-          el('dd', { textContent: `${f.rawGrams} g (about ${Math.round(f.rawGrams * b.scouredYield)} g once scoured)` }),
+          el('dd', { textContent: `${raw} g (about ${Math.round(raw * b.scouredYield)} g once scoured)` }),
           el('dt', { textContent: 'Staple' }),
           el('dd', { textContent: `${f.stapleCm} cm` }),
           el('dt', { textContent: 'Quality' }),
-          el('dd', { textContent: `${f.grade} (${f.score})` }),
+          el('dd', { textContent: `${gradeOf(f.score)} (${f.score})` }),
         ]),
         el('p', {
           className: 'hint',
           textContent:
-            `40 base + ${f.parts.happiness} happiness + ${f.parts.feed} feed + ${f.parts.growth} growth − ${f.parts.vm} VM` +
-            (f.parts.secondCuts ? ` − ${f.parts.secondCuts} second cuts` : '') +
+            `40 base + ${parts.happiness} happiness + ${parts.feed} feed + ${parts.growth} growth − ${parts.vm} VM` +
+            (parts.secondCuts ? ` − ${parts.secondCuts} second cuts` : '') +
             '. Skirting in the Workshop can add up to 20 more.',
         }),
       );
