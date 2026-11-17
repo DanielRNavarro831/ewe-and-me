@@ -3,6 +3,7 @@ import { madhuFrames } from './characters';
 import { sheepFrames, catFrames } from './animals';
 import { grassTile, woodFloorTile, wallTile, dirtPathTile, fenceTile, windowSprite } from './tiles';
 import * as props from './props';
+import { FX_HEART, FX_SPARKLE, FX_SNIP } from './fx';
 import { iconRanch, iconWorkshop, iconDye, iconShop, iconStash, iconCollection, iconSettings } from './icons';
 
 /**
@@ -26,6 +27,10 @@ export function buildPlaceholders(): Record<string, PixelMap[]> {
     prop_window: [windowSprite()],
     prop_spinning_wheel: [props.spinningWheel()],
     prop_hay_trough: [props.hayTrough()],
+    prop_trough_empty: [props.hayTrough(false)],
+    fx_heart: [FX_HEART],
+    fx_sparkle: [FX_SPARKLE],
+    fx_snip: [FX_SNIP],
     prop_skirting_table: [props.skirtingTable()],
     prop_wash_tub: [props.washTub()],
     prop_dye_stove: [props.dyeStove()],

@@ -51,7 +51,11 @@ export abstract class RoomScene extends Phaser.Scene {
     this.lightTimer = this.time.addEvent({ delay: 15_000, loop: true, callback: () => this.applyLighting() });
     const unsub = game.onChange(() => this.applyLighting());
 
-    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => this.walkTo(p.worldX, p.worldY));
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]) => {
+      // Taps on interactive things (sheep, trough…) are handled by those objects.
+      if (over.length || this.onFloorTap(p)) return;
+      this.walkTo(p.worldX, p.worldY);
+    });
     this.scale.on('resize', this.onResize, this);
     this.events.once('shutdown', () => {
       unsub();
@@ -62,6 +66,11 @@ export abstract class RoomScene extends Phaser.Scene {
 
   /** Furniture and characters for this room. */
   protected abstract decorate(): void;
+
+  /** Lets a room claim a tap on empty floor (return true to stop Madhu walking). */
+  protected onFloorTap(_p: Phaser.Input.Pointer): boolean {
+    return false;
+  }
 
   private onResize(): void {
     // Rebuild the room at the new size (e.g. phone rotated or browser resized).
@@ -125,11 +134,23 @@ export abstract class RoomScene extends Phaser.Scene {
     this.place(this.madhu);
   }
 
-  protected walkTo(x: number, y: number): void {
+  /** Walks Madhu to a spot; `onArrive` runs when she gets there (not if she's sent elsewhere first). */
+  protected walkTo(x: number, y: number, onArrive?: () => void): void {
     const tx = Phaser.Math.Clamp(Math.round(x), 8, this.W - 8);
     const ty = Phaser.Math.Clamp(Math.round(y), this.floorTop + 20, this.H - 4);
     this.target = new Phaser.Math.Vector2(tx, ty);
+    this.onArrive = onArrive ?? null;
   }
+
+  /** Turns Madhu to look at a point. */
+  protected faceToward(x: number, y: number): void {
+    const dx = x - this.madhu.x;
+    const dy = y - this.madhu.y;
+    this.facing = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+    this.madhu.play(`char_madhu_idle_${this.facing}`, true);
+  }
+
+  private onArrive: (() => void) | null = null;
 
   update(_time: number, delta: number): void {
     if (!this.target || !this.madhu) return;
@@ -143,6 +164,9 @@ export abstract class RoomScene extends Phaser.Scene {
       this.madhu.play(`char_madhu_idle_${this.facing}`, true);
       game.state.positions[this.room.key] = { x: this.madhu.x, y: this.madhu.y };
       game.changed();
+      const cb = this.onArrive;
+      this.onArrive = null;
+      cb?.();
     } else {
       to.scale(step / dist);
       this.madhu.setPosition(this.madhu.x + to.x, this.madhu.y + to.y);

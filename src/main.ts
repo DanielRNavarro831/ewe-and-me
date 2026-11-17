@@ -7,6 +7,7 @@ import { game } from './game';
 import { computeLayout } from './layout';
 import { BootScene } from './scenes/Boot';
 import { ROOMS } from './scenes/rooms';
+import { ShearScene } from './minigames/Shear';
 import { buildHud, updateHud } from './ui/hud';
 import { unlockAudio } from './systems/audio';
 import type { SceneKey } from './systems/state';
@@ -45,8 +46,12 @@ async function start(): Promise<void> {
   if (import.meta.env.DEV) Object.assign(window, { __ewe: { phaser, game } });
 
   const switchTo = (key: SceneKey) => {
-    const current = game.state.currentScene;
-    if (phaser.scene.isActive(current)) phaser.scene.stop(current);
+    // Stop every other room or minigame (including one that is still starting), but never Boot.
+    for (const s of phaser.scene.getScenes(false)) {
+      const k = s.sys.settings.key;
+      if (k !== 'Boot' && k !== key) phaser.scene.stop(k);
+    }
+    if (phaser.scene.isActive(key)) phaser.scene.stop(key);
     game.state.currentScene = key;
     phaser.scene.start(key);
     game.changed();
@@ -60,6 +65,7 @@ async function start(): Promise<void> {
         const room = new Room();
         phaser.scene.add(room.sys.settings.key, room, false);
       }
+      phaser.scene.add('Shear', new ShearScene(), false);
       buildHud(phaser, boot, switchTo);
       phaser.scene.start(game.state.currentScene);
       document.getElementById('loading')?.remove();

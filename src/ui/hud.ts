@@ -27,6 +27,13 @@ const ROOM_NAMES: Record<SceneKey, string> = {
 const SEASON_EMOJI = { spring: '🌸', summer: '☀️', autumn: '🍂', winter: '❄️' } as const;
 
 let switchScene: (key: SceneKey) => void = () => {};
+let titleOverride: string | null = null;
+
+/** Shows a different title in the top bar while a minigame is open (null to restore). */
+export function setTitleOverride(title: string | null): void {
+  titleOverride = title;
+  updateHud();
+}
 
 export function buildHud(phaser: Phaser.Game, boot: Phaser.Scene, onSwitch: (key: SceneKey) => void): void {
   switchScene = onSwitch;
@@ -39,7 +46,8 @@ export function buildHud(phaser: Phaser.Game, boot: Phaser.Scene, onSwitch: (key
     b.setAttribute('aria-label', t.label);
     b.innerHTML = `<img alt="" src="${spriteDataUrl(boot, t.icon)}"><span>${t.label}</span>`;
     b.addEventListener('click', () => {
-      if (game.state.currentScene === t.key) return;
+      // Tapping the current room's tab does nothing, unless a minigame is covering it.
+      if (game.state.currentScene === t.key && phaser.scene.isActive(t.key)) return;
       playSfx('page_turn');
       switchScene(t.key);
     });
@@ -64,7 +72,7 @@ export function updateHud(): void {
     b.classList.toggle('active', b.dataset.key === s.currentScene);
   });
   const name = document.getElementById('room-name')!;
-  name.textContent = ROOM_NAMES[s.currentScene];
+  name.textContent = titleOverride ?? ROOM_NAMES[s.currentScene];
   const d = clock.date();
   const season = seasonOf(d, s.settings.hemisphere);
   const time = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });

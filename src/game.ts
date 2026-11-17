@@ -1,6 +1,7 @@
 import { newGame, type GameState } from './systems/state';
 import { loadGame, writeGame, requestPersistence } from './systems/save';
 import { clock, elapsedSince, dailyRefreshesBetween } from './systems/clock';
+import { tickAll } from './systems/ranch';
 
 type Listener = () => void;
 
@@ -50,6 +51,7 @@ class Game {
     const ms = elapsedSince(this.state.lastSeenAt, now);
     const dailyRefreshes = dailyRefreshesBetween(this.state.lastDailyRefreshAt, now);
     if (dailyRefreshes > 0) this.state.lastDailyRefreshAt = now;
+    tickAll(this.state, now);
     this.away = { ms, dailyRefreshes };
     this.state.lastSeenAt = Math.max(this.state.lastSeenAt, now);
     this.changed();

@@ -39,15 +39,17 @@ export function spinningWheel(): PixelMap {
   });
 }
 
-export function hayTrough(): PixelMap {
+export function hayTrough(withHay = true): PixelMap {
   return outlined(42, 18, (g) => {
     g.rect(0, 6, 40, 8, 'W');
-    g.rect(0, 6, 40, 1, 'L');
+    g.rect(0, 6, 40, 1, withHay ? 'L' : 'D');
     g.rect(0, 13, 40, 1, 'D');
     for (let x = 5; x < 38; x += 8) g.rect(x, 7, 1, 6, 'D');
-    // hay heaped above the rim
-    g.rect(1, 3, 38, 3, 'y');
-    for (let x = 2; x < 38; x += 3) g.set(x, 2, 'y').set(x + 1, 4, 'L');
+    if (withHay) {
+      // hay heaped above the rim
+      g.rect(1, 3, 38, 3, 'y');
+      for (let x = 2; x < 38; x += 3) g.set(x, 2, 'y').set(x + 1, 4, 'L');
+    }
     g.rect(2, 14, 2, 2, 'D').rect(36, 14, 2, 2, 'D');
   });
 }

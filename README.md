@@ -9,7 +9,7 @@ runs full-screen and offline, like a normal app.
 ## Milestones
 
 - [x] **M0 – Foundation:** PWA install, pixel-perfect scaling, tab bar, save/load with backup codes, clock and lighting, palette, code-drawn sprites with art overrides
-- [ ] M1 – Ranch
+- [x] **M1 – Ranch:** Merino fleece growth (computed while closed), naming, petting, brushing, hay trough, shear minigame with second cuts, fleece quality and grades
 - [ ] M2 – Workshop
 - [ ] M3 – Shop
 - [ ] M4 – Dye Studio

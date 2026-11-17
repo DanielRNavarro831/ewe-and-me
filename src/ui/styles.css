@@ -351,6 +351,117 @@ ul.assets small {
   color: var(--paper);
 }
 
+/* ---------- ranch ---------- */
+.bar {
+  height: 14px;
+  background: var(--light);
+  border: 2px solid var(--outline);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  background: var(--teal);
+}
+.stat {
+  font-size: 15px;
+  margin: 4px 0;
+}
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  font-size: 15px;
+}
+.checklist li {
+  padding: 3px 0;
+  color: var(--mid);
+}
+.checklist li::before {
+  content: '○ ';
+}
+.checklist li.done {
+  color: var(--outline);
+}
+.checklist li.done::before {
+  content: '✓ ';
+  color: var(--teal);
+}
+.text-input {
+  width: 100%;
+  font-family: var(--font);
+  font-size: 18px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 2px solid var(--soft);
+  border-radius: 6px;
+  background: #fff8ec;
+  color: var(--outline);
+  margin-top: 8px;
+}
+.error {
+  color: #a3412d;
+  font-size: 14px;
+  margin: 4px 0;
+}
+ul.fleeces {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+ul.fleeces li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--light);
+}
+ul.fleeces small {
+  grid-column: 1 / 3;
+  color: var(--mid);
+  font-size: 13px;
+}
+.grade {
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--light);
+}
+.grade.fine {
+  background: #cfe3d5;
+}
+.grade.superior {
+  background: #f1d79a;
+}
+.grade.masterwork {
+  background: var(--lavender);
+  color: var(--paper);
+}
+#hint-bar {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 16px);
+  background: var(--outline);
+  color: var(--paper);
+  border: 2px solid var(--mustard);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 15px;
+  text-align: center;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#hint-bar .btn {
+  min-height: 40px;
+  font-size: 14px;
+  padding: 4px 10px;
+}
+
 /* ---------- toast ---------- */
 .toast {
   position: fixed;

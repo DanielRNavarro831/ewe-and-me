@@ -1,4 +1,7 @@
 import { RoomScene } from './Room';
+import Phaser from 'phaser';
+import { RanchScene } from './Ranch';
+import { openFleeceList } from '../ui/ranchUi';
 
 /**
  * The six places Madhu can be. In M0 they are furnished rooms to walk around;
@@ -6,22 +9,6 @@ import { RoomScene } from './Room';
  * Floor props use origin (0.5, 1) at their feet so they depth-sort with Madhu;
  * wall props sit behind everything.
  */
-
-export class RanchScene extends RoomScene {
-  constructor() {
-    super({ key: 'Ranch', floor: 'tile_grass' });
-  }
-  protected decorate(): void {
-    const { W } = this;
-    // fence along the back of the pasture
-    this.add.tileSprite(0, 55, W, 16, 'tile_fence').setOrigin(0).setDepth(56);
-    // dirt path down to the barn door
-    this.add.tileSprite(W / 2 - 16, 72, 32, this.H - 72, 'tile_dirt_path').setOrigin(0).setDepth(-1);
-    this.floorProp(48, 152, 'prop_hay_trough');
-    this.place(this.add.sprite(190, 150, 'sheep_merino_stage3').setOrigin(0.5, 1).play('sheep_merino_stage3'));
-    this.place(this.add.sprite(64, 230, 'cat_mango_idle').setOrigin(0.5, 1).play('cat_mango_idle'));
-  }
-}
 
 export class WorkshopScene extends RoomScene {
   constructor() {
@@ -68,7 +55,10 @@ export class StashScene extends RoomScene {
   }
   protected decorate(): void {
     for (let r = 0; r < 3; r++) for (let c = 0; c < 6; c++) this.wallProp(9 + c * 42, 4 + r * 21, 'prop_cubby');
-    this.floorProp(130, 172, 'prop_yarn_basket');
+    // The basket holds raw fleeces for now; the full Stash screen arrives in M2.
+    const basket = this.floorProp(130, 172, 'prop_yarn_basket');
+    basket.setInteractive(new Phaser.Geom.Rectangle(-8, -10, 46, 40), Phaser.Geom.Rectangle.Contains);
+    basket.on('pointerdown', () => this.walkTo(basket.x + 24, basket.y + 4, () => openFleeceList()));
   }
 }
 

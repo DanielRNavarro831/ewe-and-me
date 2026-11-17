@@ -34,7 +34,8 @@ const MADHU =
   `blue jeans and brown boots; ${CUTE}`;
 const IROH = `Iroh, a big round orange tabby cat (#E8892B, stripes #B85E1A, cream #F6D7A7) with amber eyes; the tip of his left ear is snipped; ${CUTE}`;
 const MANGO = `Mango, a small slim orange tabby cat (#E8892B, stripes #B85E1A) with a lighter cream muzzle and light-green eyes; ${CUTE}`;
-const MERINO = 'a Merino sheep with a light face and very fine, dense white fleece (#FFF8EC, shade #E6DCCB)';
+const MERINO =
+  'a cute Merino sheep with a big round light face, a sparkly eye and a rosy cheek, and very fine, dense white fleece (#FFF8EC, shade #E6DCCB)';
 
 const dirs = ['down', 'up', 'left', 'right'] as const;
 
@@ -67,6 +68,10 @@ export const SPRITES: SpriteAsset[] = [
   { key: 'prop_window', w: 26, h: 22, frames: 1, description: 'cozy wooden-framed window showing sky and grass' },
   { key: 'prop_spinning_wheel', w: 34, h: 34, frames: 1, description: 'an old wooden castle-style spinning wheel, side view, with a bobbin of mustard yarn on the flyer' },
   { key: 'prop_hay_trough', w: 42, h: 18, frames: 1, description: 'a wooden feed trough heaped with golden hay' },
+  { key: 'prop_trough_empty', w: 42, h: 18, frames: 1, description: 'the same wooden feed trough, empty' },
+  { key: 'fx_heart', w: 8, h: 8, frames: 1, description: 'a tiny pink heart that floats up when an animal is petted' },
+  { key: 'fx_sparkle', w: 8, h: 8, frames: 1, description: 'a tiny white sparkle shown while brushing' },
+  { key: 'fx_snip', w: 8, h: 8, frames: 1, description: 'a tiny tuft of short wool snippets (a second cut)' },
   { key: 'prop_skirting_table', w: 66, h: 30, frames: 1, description: 'a long wooden fleece skirting table with a slatted top' },
   { key: 'prop_wash_tub', w: 34, h: 20, frames: 1, description: 'a round metal wash tub of water for scouring fleece' },
   { key: 'prop_dye_stove', w: 38, h: 36, frames: 1, description: 'a small iron stove with a steaming dye pot of teal dye on top' },

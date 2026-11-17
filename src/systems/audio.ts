@@ -6,7 +6,17 @@ import { game } from '../game';
  * otherwise a tiny synthesized placeholder. Music arrives in M7.
  */
 
-type Tone = { f: number; to?: number; d: number; type?: OscillatorType; v?: number; delay?: number };
+type Tone = {
+  f: number;
+  to?: number;
+  d: number;
+  /** Oscillator shape, or 'noise' for filtered white noise (f = filter frequency). */
+  type?: OscillatorType | 'noise';
+  v?: number;
+  delay?: number;
+  /** Vibrato depth in Hz (for the baa). */
+  wobble?: number;
+};
 
 /** Placeholder recipes. Keys without a recipe fall back to a soft tap. */
 const RECIPES: Record<string, Tone[]> = {
@@ -24,7 +34,29 @@ const RECIPES: Record<string, Tone[]> = {
     { f: 988, d: 0.06, type: 'square', v: 0.12 },
     { f: 1319, d: 0.18, type: 'square', v: 0.12, delay: 0.06 },
   ],
+  shear_snip: [
+    { f: 5200, d: 0.03, type: 'noise', v: 0.35 },
+    { f: 3800, d: 0.04, type: 'noise', v: 0.25, delay: 0.05 },
+  ],
+  sheep_baa: [{ f: 340, to: 300, d: 0.55, type: 'sawtooth', v: 0.12, wobble: 18 }],
+  card_brush: [{ f: 1800, d: 0.12, type: 'noise', v: 0.18 }],
+  fleece_drop: [
+    { f: 300, d: 0.18, type: 'noise', v: 0.3 },
+    { f: 110, to: 70, d: 0.15, type: 'sine', v: 0.25 },
+  ],
+  purr: [{ f: 55, d: 0.6, type: 'sawtooth', v: 0.08, wobble: 6 }],
+  felt_oops: [{ f: 400, to: 250, d: 0.25, type: 'triangle', v: 0.2 }],
 };
+
+let noiseBuffer: AudioBuffer | null = null;
+function noise(ac: AudioContext): AudioBuffer {
+  if (!noiseBuffer) {
+    noiseBuffer = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+  }
+  return noiseBuffer;
+}
 
 let ctx: AudioContext | null = null;
 const fileCache = new Map<string, HTMLAudioElement>();
@@ -68,17 +100,41 @@ export function playSfx(key: string): void {
   const t0 = ac.currentTime;
   for (const tone of tones) {
     const start = t0 + (tone.delay ?? 0);
-    const osc = ac.createOscillator();
     const gain = ac.createGain();
-    osc.type = tone.type ?? 'sine';
-    osc.frequency.setValueAtTime(tone.f, start);
-    if (tone.to) osc.frequency.exponentialRampToValueAtTime(tone.to, start + tone.d);
     const peak = (tone.v ?? 0.2) * volume;
     gain.gain.setValueAtTime(0.0001, start);
     gain.gain.exponentialRampToValueAtTime(peak, start + 0.008);
     gain.gain.exponentialRampToValueAtTime(0.0001, start + tone.d);
-    osc.connect(gain).connect(ac.destination);
-    osc.start(start);
-    osc.stop(start + tone.d + 0.02);
+    gain.connect(ac.destination);
+
+    let source: AudioScheduledSourceNode;
+    if (tone.type === 'noise') {
+      const src = ac.createBufferSource();
+      src.buffer = noise(ac);
+      const filter = ac.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = tone.f;
+      filter.Q.value = 1.2;
+      src.connect(filter).connect(gain);
+      source = src;
+    } else {
+      const osc = ac.createOscillator();
+      osc.type = tone.type ?? 'sine';
+      osc.frequency.setValueAtTime(tone.f, start);
+      if (tone.to) osc.frequency.exponentialRampToValueAtTime(tone.to, start + tone.d);
+      if (tone.wobble) {
+        const lfo = ac.createOscillator();
+        const depth = ac.createGain();
+        lfo.frequency.value = 7;
+        depth.gain.value = tone.wobble;
+        lfo.connect(depth).connect(osc.frequency);
+        lfo.start(start);
+        lfo.stop(start + tone.d + 0.02);
+      }
+      osc.connect(gain);
+      source = osc;
+    }
+    source.start(start);
+    source.stop(start + tone.d + 0.02);
   }
 }
