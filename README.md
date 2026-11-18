@@ -12,7 +12,7 @@ runs full-screen and offline, like a normal app.
 - [x] **M1 – Ranch:** Merino fleece growth (computed while closed), naming, petting, brushing, hay trough, shear minigame with second cuts, fleece quality and grades
 - [x] **M2 – Workshop:** skirting, scouring (with felting), hand carding, spinning (treadle + drafting, woolen/worsted, whorl ratios, art yarn), plying (2/3-ply and chain-ply), finishing (niddy-noddy, ties, soak, thwack, WPI), graded skeins, Stash screen with frogging
 - [x] **M3 – Shop:** six shelf slots with price nudges, the design-doc pricing formula with seasonal demand, walk-in customers with preferences (tips and reputation for strong matches), sales ledger, Daniel's away-sales with a note on return
-- [ ] M4 – Dye Studio
+- [x] **M4 – Dye Studio:** acid dye process (pre-soak, 1% stock solutions and DOS, acid, heat to ~85°C and exhaust, rinse and a 15-minute drying rack), RYB color mixing with depth, overdyeing and luster, immersion and kettle dyeing (kettle at shop level 2), swatch book with named colorways, dye lots
 - [ ] M5 – Village
 - [ ] M6 – Progression
 - [ ] M7 – Polish

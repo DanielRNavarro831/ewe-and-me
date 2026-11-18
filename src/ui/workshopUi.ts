@@ -8,6 +8,9 @@ import { unlock } from '../systems/achievements';
 import { playSfx } from '../systems/audio';
 import { openModal, el, toast } from './modal';
 import { isOnShelf, priceOf } from '../systems/economy';
+import { isDrying, swatchCss } from '../systems/dye';
+import { formatDuration } from '../systems/ranch';
+import { clock } from '../systems/clock';
 
 function btn(label: string, onClick: () => void, className = 'btn'): HTMLButtonElement {
   const b = el('button', { className, textContent: label });
@@ -316,16 +319,17 @@ export function openStash(filter: StashFilter = 'yarn'): void {
 }
 
 function yarnRow(y: Yarn, rerender: () => void): HTMLElement {
-  const hex = y.dye?.hex ?? naturalColor(breed(y.breedId), y.colorId).hex;
   const details = [
     `${y.grams} g · ${y.yards} yd`,
     `${y.wpi} WPI ${weightForWpi(y.wpi).name}`,
     y.prep,
     y.plyBalance !== null ? `ply balance ${y.plyBalance}${y.balanced ? ' (balanced)' : ''}` : 'singles',
     `evenness ${y.evenness}`,
-    y.dye ? `lot ${y.dye.lot}` : 'undyed',
+    y.dye ? `${y.dye.technique}, lot ${y.dye.lot}` : 'undyed',
+    ...(y.tags.length ? [y.tags.join(', ')] : []),
     `made ${new Date(y.madeAt).toLocaleDateString()}`,
   ];
+  const drying = isDrying(y);
   const frogBtn = btn('Frog it', () => {
     if (!confirm(`Rip ${yarnName(y)} back to fiber? You'll get the rolags back to spin again.`)) return;
     frog(game.state, y);
@@ -335,14 +339,22 @@ function yarnRow(y: Yarn, rerender: () => void): HTMLElement {
     rerender();
   }, 'btn small');
   const onShelf = isOnShelf(game.state, y.id);
+  const status = onShelf
+    ? `On a shop shelf · $${priceOf(y, game.state).price}`
+    : drying
+      ? `Drying on the rack · ready in ${formatDuration((y.dryingUntil ?? 0) - clock.now())}`
+      : '';
+  const sw = el('span', { className: 'swatch' });
+  sw.style.background = swatchCss(y);
   return el('li', {}, [
-    swatch(hex),
+    sw,
     el('div', {}, [
       el('strong', { textContent: yarnName(y) }),
       el('small', { textContent: details.join(' · ') }),
       el('span', { className: `grade ${y.grade.toLowerCase()}`, textContent: `${y.grade} (${y.score})` }),
-      ...(onShelf ? [el('small', { className: 'next', textContent: `On a shop shelf · $${priceOf(y, game.state).price}` })] : []),
+      ...(status ? [el('small', { className: 'next', textContent: status })] : []),
     ]),
-    onShelf ? el('span') : frogBtn,
+    // dyed skeins can't be ripped back to undyed fiber
+    onShelf || drying || y.dye ? el('span') : frogBtn,
   ]);
 }

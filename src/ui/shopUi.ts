@@ -1,12 +1,14 @@
 import { game } from '../game';
 import type { Yarn } from '../systems/state';
-import { isOnShelf, placeOnShelf, priceOf, setNudge, todaysEarnings, yarnHex, type PriceBreakdown } from '../systems/economy';
+import { isOnShelf, placeOnShelf, priceOf, setNudge, todaysEarnings, type PriceBreakdown } from '../systems/economy';
 import type { AwaySummary } from '../systems/customers';
 import { yarnName } from '../systems/workshop';
 import { formatDuration } from '../systems/ranch';
 import { playSfx } from '../systems/audio';
 import { MAX_NUDGE } from '../data/pricing';
 import { openModal, el } from './modal';
+import { isDrying, swatchCss } from '../systems/dye';
+import { shopLevel } from '../data/shopLevels';
 
 function btn(label: string, onClick: () => void, className = 'btn'): HTMLButtonElement {
   const b = el('button', { className, textContent: label });
@@ -68,7 +70,7 @@ export function openShelfSlot(slot: number, onChange: () => void): void {
       });
       update();
       body.append(
-        el('div', { className: 'skein-head' }, [swatch(yarnHex(y)), el('div', {}, [el('strong', { textContent: yarnName(y) }), el('small', { textContent: `${y.grams} g · ${y.yards} yd · ${y.grade} (${y.score})` })]), price]),
+        el('div', { className: 'skein-head' }, [swatch(swatchCss(y)), el('div', {}, [el('strong', { textContent: yarnName(y) }), el('small', { textContent: `${y.grams} g · ${y.yards} yd · ${y.grade} (${y.score})` })]), price]),
         el('p', { className: 'hint', textContent: breakdownText(p0) }),
         el('label', { className: 'row' }, [el('span', { textContent: 'Price' }), slider, nudgeLabel]),
         help,
@@ -86,7 +88,7 @@ export function openShelfSlot(slot: number, onChange: () => void): void {
   }
 
   openModal('Stock the shelf', (body, close) => {
-    const available = s.yarns.filter((v) => !isOnShelf(s, v.id));
+    const available = s.yarns.filter((v) => !isOnShelf(s, v.id) && !isDrying(v));
     if (!available.length) {
       body.append(
         el('p', {
@@ -102,7 +104,7 @@ export function openShelfSlot(slot: number, onChange: () => void): void {
       const p = priceOf(v, s);
       ul.append(
         el('li', {}, [
-          swatch(yarnHex(v)),
+          swatch(swatchCss(v)),
           el('div', {}, [el('strong', { textContent: yarnName(v) }), el('small', { textContent: `${v.grams} g · ${v.yards} yd · ${v.grade} · $${p.price}` })]),
           btn('Put out', () => {
             placeOnShelf(s, slot, v.id);
@@ -129,7 +131,7 @@ export function openLedger(): void {
         el('dt', { textContent: 'All time' }),
         el('dd', { textContent: `$${s.stats.earned} from ${s.stats.sold} skein${s.stats.sold === 1 ? '' : 's'}` }),
         el('dt', { textContent: 'Reputation' }),
-        el('dd', { textContent: `★ ${s.reputation}` }),
+        el('dd', { textContent: `★ ${s.reputation} (shop level ${shopLevel(s.reputation)})` }),
       ]),
     );
     const sales = [...s.shop.sales].reverse().slice(0, 15);

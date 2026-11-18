@@ -8,7 +8,7 @@
  * Old saves are then upgraded step by step on load, so nothing is ever lost.
  */
 
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 
 export type SceneKey = 'Ranch' | 'Workshop' | 'DyeStudio' | 'Shop' | 'Stash' | 'Collection';
 
@@ -106,8 +106,34 @@ export interface Yarn {
   grade: Grade;
   tags: string[];
   madeAt: number;
-  /** Filled in by the Dye Studio (M4). */
-  dye: null | { colorway: string; lot: string; technique: string; hex: string };
+  /** Filled in by the Dye Studio. */
+  dye: null | YarnDye;
+  /** While hanging on the drying rack after dyeing: when it's dry. */
+  dryingUntil?: number;
+}
+
+export interface YarnDye {
+  /** Colorway name (from the swatch book). */
+  colorway: string;
+  colorwayId: string;
+  /** Dye lot number, e.g. "014". */
+  lot: string;
+  technique: string;
+  /** Main color; kettle-dyed skeins also have lighter and darker tones. */
+  hex: string;
+  tones?: [string, string];
+}
+
+/** A saved recipe in the swatch book. Amounts are DOS % so they scale to any pot. */
+export interface Colorway {
+  id: string;
+  name: string;
+  dos: { red: number; yellow: number; blue: number; black: number };
+  technique: string;
+  /** Color on white wool with full uptake, for the swatch. */
+  hex: string;
+  createdAt: number;
+  lots: string[];
 }
 
 export interface Sale {
@@ -156,6 +182,12 @@ export interface GameState {
   /** Achievement ids earned. */
   achievements: string[];
   shop: ShopState;
+  /** The swatch book. */
+  colorways: Colorway[];
+  /** Next dye lot number. */
+  nextLot: number;
+  /** Upgrade ids bought (M6 fills in the catalog). */
+  upgrades: string[];
   nextId: number;
   settings: Settings;
   stats: {
@@ -167,6 +199,7 @@ export interface GameState {
     frogged: number;
     sold: number;
     earned: number;
+    dyeBatches: number;
   };
 }
 
@@ -209,6 +242,9 @@ export function newGame(now: number): GameState {
     yarns: [],
     achievements: [],
     shop: newShop(),
+    colorways: [],
+    nextLot: 1,
+    upgrades: [],
     nextId: 2,
     settings: {
       musicVolume: 0.6,
@@ -217,7 +253,7 @@ export function newGame(now: number): GameState {
       knittingCircleDay: 6,
       debugTimeOffsetMs: 0,
     },
-    stats: { launches: 0, saves: 0, shorn: 0, pets: 0, skeins: 0, frogged: 0, sold: 0, earned: 0 },
+    stats: { launches: 0, saves: 0, shorn: 0, pets: 0, skeins: 0, frogged: 0, sold: 0, earned: 0, dyeBatches: 0 },
   };
 }
 
@@ -264,6 +300,8 @@ const MIGRATIONS: Record<number, Migration> = {
   },
   // v3 → v4 (M3 Shop): shelves, price nudges and the sales ledger.
   3: (s) => ({ ...s, version: 4, shop: newShop(), stats: { ...s.stats, sold: 0, earned: 0 } }),
+  // v4 → v5 (M4 Dye Studio): the swatch book, dye lots and upgrades.
+  4: (s) => ({ ...s, version: 5, colorways: [], nextLot: 1, upgrades: [], stats: { ...s.stats, dyeBatches: 0 } }),
 };
 
 export class SaveTooNewError extends Error {}
@@ -298,6 +336,8 @@ export function migrate(raw: any): GameState {
     yarns: Array.isArray(s.yarns) ? s.yarns : [],
     achievements: Array.isArray(s.achievements) ? s.achievements : [],
     shop: { ...newShop(), ...(s.shop ?? {}) },
+    colorways: Array.isArray(s.colorways) ? s.colorways : [],
+    upgrades: Array.isArray(s.upgrades) ? s.upgrades : [],
   };
 }
 

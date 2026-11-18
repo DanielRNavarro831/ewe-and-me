@@ -45,6 +45,12 @@ const RECIPES: Record<string, Tone[]> = {
     { f: 110, to: 70, d: 0.15, type: 'sine', v: 0.25 },
   ],
   purr: [{ f: 55, d: 0.6, type: 'sawtooth', v: 0.08, wobble: 6 }],
+  dye_pour: [{ f: 700, to: 400, d: 0.35, type: 'noise', v: 0.22 }],
+  dye_bubble: [
+    { f: 300, to: 520, d: 0.06, type: 'sine', v: 0.12 },
+    { f: 420, to: 700, d: 0.05, type: 'sine', v: 0.08, delay: 0.08 },
+  ],
+  speckle_sprinkle: [{ f: 4200, d: 0.2, type: 'noise', v: 0.12 }],
   shop_bell: [
     { f: 1568, d: 0.35, type: 'sine', v: 0.18 },
     { f: 2093, d: 0.45, type: 'sine', v: 0.14, delay: 0.09 },

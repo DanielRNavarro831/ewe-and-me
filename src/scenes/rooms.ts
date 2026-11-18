@@ -6,6 +6,8 @@ import Phaser from 'phaser';
 import { RanchScene } from './Ranch';
 import { WorkshopScene } from './Workshop';
 import { ShopScene } from './Shop';
+import { DyeStudioScene } from './DyeStudio';
+import { openSwatchBook } from '../ui/dyeUi';
 import { openStash } from '../ui/workshopUi';
 import { showHint } from '../ui/modal';
 
@@ -15,18 +17,6 @@ import { showHint } from '../ui/modal';
  * Floor props use origin (0.5, 1) at their feet so they depth-sort with Madhu;
  * wall props sit behind everything.
  */
-
-export class DyeStudioScene extends RoomScene {
-  constructor() {
-    super({ key: 'DyeStudio', wall: 'tile_wall_teal', floor: 'tile_wood_floor' });
-  }
-  protected decorate(): void {
-    this.addWindow(50);
-    this.wallProp(150, 8, 'prop_dye_shelf');
-    this.floorProp(120, 170, 'prop_dye_stove');
-    this.floorProp(226, 164, 'prop_drying_rack');
-  }
-}
 
 export class StashScene extends RoomScene {
   constructor() {
@@ -73,7 +63,10 @@ export class CollectionScene extends RoomScene {
   protected decorate(): void {
     this.addWindow(36);
     for (let i = 0; i < 4; i++) this.wallProp(90 + i * 44, 16, 'prop_picture_frame');
-    this.floorProp(this.W / 2, 176, 'prop_book_stand');
+    // the book on the stand is the swatch book (the breed book and achievements join it in M6)
+    const book = this.floorProp(this.W / 2, 176, 'prop_book_stand');
+    book.setInteractive(new Phaser.Geom.Rectangle(-6, -6, 42, 44), Phaser.Geom.Rectangle.Contains);
+    book.on('pointerdown', () => this.walkTo(this.W / 2 + 26, 182, () => openSwatchBook()));
   }
 }
 

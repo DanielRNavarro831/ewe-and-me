@@ -516,7 +516,7 @@ h3.sub {
 /* ---------- shop ---------- */
 .skein-head {
   display: grid;
-  grid-template-columns: 28px 1fr auto;
+  grid-template-columns: auto 1fr auto;
   gap: 10px;
   align-items: center;
 }
@@ -572,6 +572,53 @@ blockquote.note {
   font-size: 15px;
   color: var(--paper);
   padding: 4px 8px;
+}
+
+/* ---------- dye ---------- */
+.swatch.big {
+  width: 40px;
+  height: 40px;
+  flex: none;
+}
+.dye-row span:first-child {
+  width: 72px;
+  flex: none;
+}
+.dye-row input[type='range'] {
+  flex: 1;
+}
+.dye-read {
+  width: 104px;
+  flex: none;
+  text-align: right;
+  font-size: 13px;
+}
+.burner {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  min-width: 120px;
+}
+ul.swatches {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+ul.swatches li {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 4px 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--light);
+}
+ul.swatches li > div {
+  display: flex;
+  flex-direction: column;
+}
+ul.swatches small {
+  color: var(--mid);
+  font-size: 13px;
 }
 
 /* ---------- minigame controls ---------- */

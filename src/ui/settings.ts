@@ -184,6 +184,18 @@ export function openSettings(phaser: Phaser.Game): void {
         button('+1 day', bump(24 * 36e5)),
         button('Reset', bump(0)),
       ]),
+      el('p', { className: 'hint', textContent: 'Reputation unlocks shop levels (kettle dyeing at level 2).' }),
+      el('div', { className: 'btn-row' }, [
+        button('+50 reputation', () => {
+          game.state.reputation += 50;
+          game.changed();
+          toast(`Reputation: ${game.state.reputation}`);
+        }),
+        button('+$100', () => {
+          game.state.money += 100;
+          game.changed();
+        }),
+      ]),
       button('Asset checklist', () => openAssetList(phaser)),
     ]);
     body.append(section('', dev));
